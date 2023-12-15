@@ -18,7 +18,7 @@
       {#if user?.photoURL}
         <img alt="User Icon" width="40" height="40" src={user?.photoURL} />
       {:else}
-        <img alt="User Icon" width="15" height="15" src="/astro.svg" />
+        <img alt="User Icon" width="15" height="15" src="/person.svg" />
       {/if}
     </button>
     <div slot="content">

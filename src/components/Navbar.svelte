@@ -24,24 +24,23 @@
   }`}
 >
   <div
-    class="mx-5 flex h-16 max-w-screen-xl items-center justify-between w-full"
+    class="mx-5 flex h-24 max-w-screen-xl items-center justify-center w-full"
   >
     <a href="/" class="flex items-center font-display text-2xl">
       <img
-        src="/astro.svg"
-        alt="Astro logo"
-        width="30"
-        height="30"
+        src="/glebscards_logo.svg"
+        alt="Gleb's cards"
+        width="80"
+        height="80"
         class="mr-2 rounded-sm"
       />
-      <p class="ml-5 font-bold">Astro</p>
     </a>
-    <div>
+    <!-- <div>
       {#if user}
         <UserDropdown {user} />
       {:else}
         <Button href="/signin" variant="rounded">Sign In</Button>
       {/if}
-    </div>
+    </div> -->
   </div>
 </div>

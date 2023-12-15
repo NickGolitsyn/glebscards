@@ -1,13 +1,17 @@
 import { initializeApp } from "firebase/app";
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBu6KkVzDWVgYPf4UPM08rFowqy5ayNMTc",
-  authDomain: "fir-astro-starter.firebaseapp.com",
-  projectId: "fir-astro-starter",
-  storageBucket: "fir-astro-starter.appspot.com",
-  messagingSenderId: "996337362101",
-  appId: "1:996337362101:web:47d0d82c326e84fe29cafc",
-  measurementId: "G-ZLM4QPD3KQ",
+  apiKey: "AIzaSyBXAAacyrpflY0IEmHByLkMWmBhe7sJTL4",
+  authDomain: "glebscards.firebaseapp.com",
+  projectId: "glebscards",
+  storageBucket: "glebscards.appspot.com",
+  messagingSenderId: "713246068103",
+  appId: "1:713246068103:web:10da4e3b6d441a173f9722",
+  measurementId: "G-F5KHN0JS47"
 };
 
-export const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+export {app, db}

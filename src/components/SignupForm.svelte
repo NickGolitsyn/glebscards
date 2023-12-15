@@ -76,16 +76,5 @@
         <Button class="w-full" type="submit">Sign up</Button>
       </div>
     </form>
-    <div class="relative">
-      <div class="absolute inset-0 flex items-center">
-        <span class="w-full border-t" />
-      </div>
-      <div class="relative flex justify-center text-xs uppercase">
-        <span class="bg-white px-2 text-[#71717a]">Or continue with</span>
-      </div>
-    </div>
-    <div>
-      <GoogleSignInButton />
-    </div>
   </div>
 </div>
