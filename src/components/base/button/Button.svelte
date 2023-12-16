@@ -25,14 +25,6 @@
   const isLink = (): boolean => typeof href === "string" && href.length > 0;
 </script>
 
-<!--
-  * When 'href' is defined, we render an <a> element instead of a <button>.
-  This is important for accessibility because screen readers and other
-  assistive technologies use the semantic information of HTML elements
-  to convey their function to users. An <a> element signifies a hyperlink
-  that navigates the user to a new page or resource, while a <button>
-  indicates an action or command that the user can perform on the current page.
--->
 {#if isLink()}
   <a
     {...$$restProps}

@@ -1,17 +1,17 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+// @ts-ignore
 import Home from "../components/Home.svelte";
 import Navbar from "../components/Navbar.svelte";
 import getUserData from "@/firebase/utils/auth/getUserData";
 
-const title = "Home - Astro Starter Pack";
-const description =
-  "Seamlessly integrate Firebase Auth with TailwindCSS and Svelte - start building secure and stylish applications with ease.";
+const title = "Gleb's Cards";
+const description = "This website sells Gleb Feels Christmas cards. Gleb's Cards";
 const sessionCookie = Astro.cookies.get("session")?.value ?? null;
 const user = await getUserData(sessionCookie);
 ---
 
 <Layout title={title} description={description}>
-  <Navbar {user} client:load />
+  <Navbar client:load />
   <Home {user} client:load />
 </Layout>

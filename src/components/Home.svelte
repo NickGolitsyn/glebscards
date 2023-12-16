@@ -1,15 +1,9 @@
 <script lang="ts">
   import type { User } from "firebase/auth";
   import { Button } from "@/components/base/button";
-  import Spinner from "./icons/Spinner.svelte";
   import { collection, addDoc } from "firebase/firestore"; 
   import { db } from "@/firebase/client";
   export let user: User;
-
-  function signOut() {
-    // Implement your sign-out logic here
-    // For example, clear user session, redirect to home page, etc.
-  }
 
   let firstName = '';
   let lastName = '';
@@ -21,6 +15,13 @@
   let cardsQuantity: number | null = null;
   let isCash = true;
   let isStandard = false; 
+  
+  let expressShipping = 350;
+  let standardShipping = 200;
+  let pricePerOne = 290;
+
+  let discountedPrice = 0
+  let totalPrice = 0
 
   function handlePaymentChange(event: any) {
     isCash = event.target.value === 'cash';
@@ -28,19 +29,11 @@
 
   function handleDeliveryChange(event: any) {
     isStandard = event.target.value === 'standard';
-    console.log(isStandard);
   }
-
-  let expressShipping = 350;
-  let standardShipping = 200;
-  let pricePerOne = 290;
 
   function handlePhoneNumberChange(event: any) {
     phoneNumber = event.target.value.replace(/[^0-9+]/g, '');
   }
-
-  let discountedPrice = 0
-  let totalPrice = 0
 
   function calculatePrice() {
     let quantity = cardsQuantity
@@ -62,7 +55,6 @@
         totalPrice = 0;
       }
     }
-    
   }
 
   async function handleSubmit(event: any) {
@@ -105,6 +97,7 @@
 
   /* Firefox */
   input[type=number] {
+    appearance: textfield;
     -moz-appearance: textfield;
   }
 
@@ -126,12 +119,6 @@
     text-wrap: nowrap;
   }
 
-  .order-info {
-    /* Override centering for this div */
-    align-self: flex-end; /* Align to the start */
-    margin-top: 50px; /* Add margin to separate it from the centered divs */
-  }
-
   @media (min-width: 768px) {
     .form-row > div:first-child,
     .form-row > div:nth-child(2) {
@@ -143,7 +130,7 @@
 <div class="grid grid-cols-3 px-4 sm:px-6 lg:px-8 pt-20">
   <div class="max-w-2xl" />
   <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
-    <form on:submit={handleSubmit}>
+    <form id="orderForm" on:submit={handleSubmit}>
       <div class="form-row form-names">
         <div>
           <label for="firstName">First Name:</label>
@@ -248,15 +235,6 @@
             bind:value={cardsQuantity}
             on:input={calculatePrice}
           />
-          {#if totalPrice !== discountedPrice}
-            <p class="mt-1">Price: {discountedPrice.toFixed(0)} rsd <s class="text-xs">{totalPrice.toFixed(0)} rsd</s> (shipping not included)</p>
-          {:else}
-            {#if totalPrice > 0}
-              <p class="mt-1">Price: {discountedPrice.toFixed(0)} rsd (shipping not included)</p>
-            {:else}
-              <p class="mt-1">Please enter a valid quantity.</p>
-            {/if}
-          {/if}
         </div>
       </div>
       <div class="form-row">
@@ -288,13 +266,12 @@
             </div>
           </div>
         {/if}
-      <Button type="submit" class="w-full transform hover:-translate-y-1">Order</Button>
     </form>
   </div>
   <div class="max-w-md w-full h-fit rounded-xl shadow-lg p-5 mt-16 bg-white sticky top-28 z-10">
     <h1 class="text-2xl font-bold mb-3">Order Summary</h1>
     
-    {#if cardsQuantity > 0}
+    {#if cardsQuantity != null && cardsQuantity > 0}
       <div class="flex grow border-b-2 border-black border-dotted">
         <div class="w-full">
           <div class="relative inline-block">
@@ -320,7 +297,7 @@
       <h2 class="text-xl w-full">Shipping</h2>
       <div class="flex items-end">
         <h2 class="text-nowrap">
-          {#if isCash == true}
+          {#if isCash || !isStandard}
             {expressShipping.toFixed(0)}
           {:else}
             {standardShipping.toFixed(0)}
@@ -329,7 +306,7 @@
         </h2>
       </div>
     </div>
-    {#if cardsQuantity >= 5}
+    {#if cardsQuantity != null && cardsQuantity >= 5}
       <div class="flex grow mb-1 border-b-2 border-black border-dotted">
         <h2 class="text-xl w-full">Discount</h2>
         <div class="flex items-end">
@@ -341,7 +318,7 @@
       <h1 class="text-2xl font-bold w-full">Total</h1>
       <div class="flex items-end">
         <h1 class="font-bold text-nowrap">
-          {#if isCash == true}
+          {#if isCash || !isStandard}
             {(discountedPrice + expressShipping).toFixed(0)}
           {:else}
             {(discountedPrice + standardShipping).toFixed(0)}
@@ -350,9 +327,9 @@
         </h1>
       </div>
     </div>
+    <Button type="submit" class="w-full transform hover:-translate-y-1 mt-3" form="orderForm">Submit</Button>
   </div>
   {#if user}
-    <!-- User is logged in, show Sign out button -->
     <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
       <div class="flex flex-col items-center justify-center gap-4">
         <Button
@@ -368,7 +345,6 @@
       </div>
     </div>
   {:else}
-    <!-- No user is logged in, show Sign up and Sign in buttons -->
     <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
       <div class="flex flex-col items-center justify-center gap-4">
         <Button

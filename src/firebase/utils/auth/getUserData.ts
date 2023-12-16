@@ -7,7 +7,7 @@
 import { getAuth } from "firebase-admin/auth";
 import { app } from "@/firebase/server";
 
-async function getUserData(cookie: string | null) {
+async function getUserData(cookie: string | null): Promise<any | null> {
   // If there's no cookie, return null immediately.
   if (cookie === null) {
     return null;

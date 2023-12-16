@@ -15,6 +15,6 @@ const oobCode = Astro.url.searchParams.get("oobCode")! || "";
 ---
 
 <Layout title={title} description={description}>
-  <Navbar {user} client:load />
+  <Navbar client:load />
   <ConfirmPasswordForm {oobCode} client:load />
 </Layout>

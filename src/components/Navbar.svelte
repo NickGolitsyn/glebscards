@@ -1,9 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import UserDropdown from "@/components/UserDropdown.svelte";
-  import { Button } from "@/components/base/button";
-  import type { User } from "firebase/auth";
-  export let user: User;
   let scrolled = false;
 
   onMount(() => {
@@ -35,12 +31,5 @@
         class="mr-2 rounded-sm"
       />
     </a>
-    <!-- <div>
-      {#if user}
-        <UserDropdown {user} />
-      {:else}
-        <Button href="/signin" variant="rounded">Sign In</Button>
-      {/if}
-    </div> -->
   </div>
 </div>

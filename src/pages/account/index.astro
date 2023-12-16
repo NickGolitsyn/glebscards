@@ -17,6 +17,6 @@ const description = "Account page to manage account settings";
 ---
 
 <Layout {description} {title}>
-  <Navbar {user} client:load />
+  <Navbar client:load />
   <EditAccountForm {user} client:load />
 </Layout>
