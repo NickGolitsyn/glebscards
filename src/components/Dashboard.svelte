@@ -60,8 +60,7 @@
           <p class="text-white">{u.progress}</p>
         </div>
         <select 
-          id="payment" 
-          name="payment" 
+          id={u.id}
           class="border border-black rounded-md py-1 px-2 mt-1"
           bind:value={u.progress}
           on:change={() => handleProgressChange(u.id, u.progress)}

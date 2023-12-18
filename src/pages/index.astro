@@ -4,6 +4,7 @@ import Layout from "@/layouts/Layout.astro";
 import Home from "../components/Home.svelte";
 import Navbar from "../components/Navbar.svelte";
 import getUserData from "@/firebase/utils/auth/getUserData";
+import Footer from "@/components/Footer.svelte";
 
 const title = "Gleb's Cards";
 const description = "This website sells Gleb Feels Christmas cards. Gleb's Cards";
@@ -14,4 +15,5 @@ const user = await getUserData(sessionCookie);
 <Layout title={title} description={description}>
   <Navbar client:load />
   <Home {user} client:load />
+  <Footer client:load />
 </Layout>

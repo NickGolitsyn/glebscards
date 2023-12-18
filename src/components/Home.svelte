@@ -3,6 +3,7 @@
   import { Button } from "@/components/base/button";
   import { collection, addDoc } from "firebase/firestore"; 
   import { db } from "@/firebase/client";
+  import CardPreview from "./CardPreview.svelte";
   export let user: User;
 
   let firstName = '';
@@ -19,12 +20,14 @@
   let expressShipping = 350;
   let standardShipping = 200;
   let pricePerOne = 290;
+  let shippingCost = isStandard ? standardShipping : expressShipping;
 
   let discountedPrice = 0
   let totalPrice = 0
 
   function handlePaymentChange(event: any) {
     isCash = event.target.value === 'cash';
+    isStandard = !isCash;
   }
 
   function handleDeliveryChange(event: any) {
@@ -60,7 +63,9 @@
   async function handleSubmit(event: any) {
     event.preventDefault();
     try {
+      const timestamp = new Date();
       await addDoc(collection(db, "orders"), {
+        time: timestamp.toISOString(),
         firstName,
         lastName,
         address,
@@ -71,6 +76,7 @@
         cardsQuantity,
         progress: 'placed',
         isCash,
+        price: discountedPrice + shippingCost,
       });
       firstName = '';
       lastName = '';
@@ -127,238 +133,248 @@
   }
 </style>
 
-<div class="grid grid-cols-3 px-4 sm:px-6 lg:px-8 pt-20">
-  <div class="max-w-2xl" />
-  <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
-    <form id="orderForm" on:submit={handleSubmit}>
-      <div class="form-row form-names">
-        <div>
-          <label for="firstName">First Name:</label>
-          <input 
-            required 
-            type="text" 
-            id="firstName" 
-            class="border border-black rounded-md w-full py-1 px-2 mt-1" 
-            bind:value={firstName} 
-          />
+<div class="mt-16 pt-20">
+  <CardPreview />
+  <div class="lg:grid flex gap-3 flex-col items-center lg:items-start lg:grid-cols-3 px-4 sm:px-6 lg:px-8 mb-20">
+    <div class="max-w-2xl" />
+    <div class="max-w-md w-full rounded-xl shadow-lg p-5 bg-white">
+      <form id="orderForm" on:submit={handleSubmit}>
+        <div class="form-row form-names">
+          <div>
+            <label for="firstName">First Name:</label>
+            <input 
+              required 
+              type="text" 
+              id="firstName" 
+              class="border border-black rounded-md w-full py-1 px-2 mt-1" 
+              bind:value={firstName} 
+            />
+          </div>
+          <div>
+            <label for="lastName">Last Name:</label>
+            <input 
+              required 
+              type="text" 
+              id="lastName" 
+              class="border border-black rounded-md w-full py-1 px-2 mt-1" 
+              bind:value={lastName} 
+            />
+          </div>
         </div>
-        <div>
-          <label for="lastName">Last Name:</label>
-          <input 
-            required 
-            type="text" 
-            id="lastName" 
-            class="border border-black rounded-md w-full py-1 px-2 mt-1" 
-            bind:value={lastName} 
-          />
+        <div class="form-row">
+          <div class="flex flex-col">
+            <label for="address">Address:</label>
+            <input 
+              required 
+              type="text" 
+              id="address" 
+              class="border border-black rounded-md py-1 px-2 mt-1" 
+              bind:value={address} 
+            />
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="flex flex-col">
-          <label for="address">Address:</label>
-          <input 
-            required 
-            type="text" 
-            id="address" 
-            class="border border-black rounded-md py-1 px-2 mt-1" 
-            bind:value={address} 
-          />
+        <div class="form-row">
+          <div class="flex flex-col">
+            <label for="city">City:</label>
+            <input 
+              required 
+              type="text" 
+              id="city" 
+              class="border border-black rounded-md py-1 px-2 mt-1" 
+              bind:value={city} 
+            />
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="flex flex-col">
-          <label for="city">City:</label>
-          <input 
-            required 
-            type="text" 
-            id="city" 
-            class="border border-black rounded-md py-1 px-2 mt-1" 
-            bind:value={city} 
-          />
+        <div class="form-row">
+          <div class="flex flex-col">
+            <label for="country">Country:</label>
+            <select id="country" name="country" class="border border-black rounded-md py-1 px-2 mt-1" >
+              <option value="Serbia">Serbia</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="flex flex-col">
-          <label for="country">Country:</label>
-          <select id="country" name="country" class="border border-black rounded-md py-1 px-2 mt-1" >
-            <option value="Serbia">Serbia</option>
-          </select>
+        <div class="form-row">
+          <div class="flex flex-col">
+            <label for="postcode">Postcode:</label>
+            <input 
+              required 
+              type="number" 
+              id="postcode" 
+              class="border border-black rounded-md py-1 px-2 mt-1" 
+              bind:value={postcode} 
+            />
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="flex flex-col">
-          <label for="postcode">Postcode:</label>
-          <input 
-            required 
-            type="number" 
-            id="postcode" 
-            class="border border-black rounded-md py-1 px-2 mt-1" 
-            bind:value={postcode} 
-          />
+        <div class="form-row">
+          <div class="flex flex-col">
+            <label for="phoneNumber">Phone Number:</label>
+            <input 
+              required 
+              type="tel" 
+              id="phoneNumber" 
+              class="border border-black rounded-md py-1 px-2 mt-1"
+              min="0"
+              bind:value={phoneNumber} 
+              on:input={handlePhoneNumberChange} />
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="flex flex-col">
-          <label for="phoneNumber">Phone Number:</label>
-          <input 
-            required 
-            type="tel" 
-            id="phoneNumber" 
-            class="border border-black rounded-md py-1 px-2 mt-1"
-            min="0"
-            bind:value={phoneNumber} 
-            on:input={handlePhoneNumberChange} />
+        <div class="form-row">
+          <div class="flex flex-col">
+            <label for="email">Email:</label>
+            <input 
+              required 
+              type="email" 
+              id="email" 
+              class="border border-black rounded-md py-1 px-2 mt-1" 
+              bind:value={email} 
+            />
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="flex flex-col">
-          <label for="email">Email:</label>
-          <input 
-            required 
-            type="email" 
-            id="email" 
-            class="border border-black rounded-md py-1 px-2 mt-1" 
-            bind:value={email} 
-          />
+        <div class="form-row">
+          <div class="flex flex-col">
+            <label for="cardsQuantity">Number of Cards (max 50):</label>
+            <input 
+              required 
+              type="number" 
+              id="cardsQuantity" 
+              class="border border-black rounded-md py-1 px-2 mt-1" 
+              min="1" 
+              max="50" 
+              bind:value={cardsQuantity}
+              on:input={calculatePrice}
+            />
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="flex flex-col">
-          <label for="cardsQuantity">Number of Cards (max 50):</label>
-          <input 
-            required 
-            type="number" 
-            id="cardsQuantity" 
-            class="border border-black rounded-md py-1 px-2 mt-1" 
-            min="1" 
-            max="50" 
-            bind:value={cardsQuantity}
-            on:input={calculatePrice}
-          />
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="flex flex-col">
-          <label for="payment">Payment Type:</label>
-          <select 
-            id="payment" 
-            name="payment" 
-            on:change={handlePaymentChange} 
-            class="border border-black rounded-md py-1 px-2 mt-1"
-          >
-            <option value="cash" selected>Cash</option>
-            <option value="bank">Bank transfer</option>
-          </select>
-        </div>
-        {#if !isCash}
-          <div class="form-row">
-            <div class="flex flex-col">
-              <label for="payment">Delivery Option:</label>
-              <select 
-                id="payment" 
-                name="payment" 
-                on:change={handleDeliveryChange} 
-                class="border border-black rounded-md py-1 px-2 mt-1"
-              >
-                <option value="standard" selected>Standard</option>
-                <option value="express">Express</option>
-              </select>
+        <div class="form-row">
+          <div class="flex flex-col">
+            <label for="payment">Payment Type:</label>
+            <select 
+              id="payment" 
+              name="payment" 
+              on:change={handlePaymentChange} 
+              class="border border-black rounded-md py-1 px-2 mt-1"
+            >
+              <option value="cash" selected>Cash</option>
+              <option value="bank">Bank transfer</option>
+            </select>
+          </div>
+          {#if !isCash}
+            <div class="form-row">
+              <div class="flex flex-col">
+                <label for="payment">Delivery Option:</label>
+                <select 
+                  id="payment" 
+                  name="payment" 
+                  on:change={handleDeliveryChange} 
+                  class="border border-black rounded-md py-1 px-2 mt-1"
+                >
+                  <option value="standard" selected>Standard</option>
+                  <option value="express">Express</option>
+                </select>
+              </div>
+            </div>
+          {/if}
+      </form>
+    </div>
+    <div class="max-w-md w-full h-fit sticky top-28 z-10 flex flex-col-reverse lg:flex-col gap-5">
+      <div class="max-w-md w-full h-fit rounded-xl shadow-lg p-5 bg-white">
+        <h1 class="text-2xl font-bold mb-3">Order Summary</h1>
+        
+        {#if cardsQuantity != null && cardsQuantity > 0}
+          <div class="flex grow border-b-2 border-black border-dotted">
+            <div class="w-full">
+              <div class="relative inline-block">
+                <!-- svelte-ignore a11y-img-redundant-alt -->
+                <img src="/card.jpeg" alt="Photo of christmas card" class="h-14 w-14 rounded-md card-logo">
+                <div class="absolute -bottom-1 -right-1 h-5 w-5 bg-black rounded-full flex justify-center items-center">
+                  <p class="text-xs text-white">{cardsQuantity}</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-end">
+              <h2 class="text-nowrap">{cardsQuantity} x {pricePerOne.toFixed(0)} rsd</h2>
             </div>
           </div>
         {/if}
-    </form>
-  </div>
-  <div class="max-w-md w-full h-fit rounded-xl shadow-lg p-5 mt-16 bg-white sticky top-28 z-10">
-    <h1 class="text-2xl font-bold mb-3">Order Summary</h1>
-    
-    {#if cardsQuantity != null && cardsQuantity > 0}
-      <div class="flex grow border-b-2 border-black border-dotted">
-        <div class="w-full">
-          <div class="relative inline-block">
-            <!-- svelte-ignore a11y-img-redundant-alt -->
-            <img src="/card.jpeg" alt="Photo of christmas card" class="h-14 w-14 rounded-md card-logo">
-            <div class="absolute -bottom-1 -right-1 h-5 w-5 bg-black rounded-full flex justify-center items-center">
-              <p class="text-xs text-white">{cardsQuantity}</p>
-            </div>
+        <div class="flex grow mb-1 border-b-2 border-black border-dotted">
+          <h2 class="text-xl w-full">Subtotal</h2>
+          <div class="flex items-end">
+            <h2 class="text-nowrap">{totalPrice.toFixed(0)} rsd</h2>
           </div>
         </div>
-        <div class="flex items-end">
-          <h2 class="text-nowrap">{cardsQuantity} x {pricePerOne.toFixed(0)} rsd</h2>
+        <div class="flex grow mb-1 border-b-2 border-black border-dotted">
+          <h2 class="text-xl w-full">Shipping</h2>
+          <div class="flex items-end">
+            <h2 class="text-nowrap">
+              {#if !isStandard}
+                {expressShipping.toFixed(0)}
+              {:else}
+                {standardShipping.toFixed(0)}
+              {/if}
+              rsd
+            </h2>
+          </div>
         </div>
-      </div>
-    {/if}
-    <div class="flex grow mb-1 border-b-2 border-black border-dotted">
-      <h2 class="text-xl w-full">Subtotal</h2>
-      <div class="flex items-end">
-        <h2 class="text-nowrap">{totalPrice.toFixed(0)} rsd</h2>
-      </div>
-    </div>
-    <div class="flex grow mb-1 border-b-2 border-black border-dotted">
-      <h2 class="text-xl w-full">Shipping</h2>
-      <div class="flex items-end">
-        <h2 class="text-nowrap">
-          {#if isCash || !isStandard}
-            {expressShipping.toFixed(0)}
-          {:else}
-            {standardShipping.toFixed(0)}
-          {/if}
-          rsd
-        </h2>
-      </div>
-    </div>
-    {#if cardsQuantity != null && cardsQuantity >= 5}
-      <div class="flex grow mb-1 border-b-2 border-black border-dotted">
-        <h2 class="text-xl w-full">Discount</h2>
-        <div class="flex items-end">
-          <h2 class="text-nowrap">-{(totalPrice - discountedPrice).toFixed(0)} rsd</h2>
+        {#if cardsQuantity != null && cardsQuantity >= 5}
+          <div class="flex grow mb-1 border-b-2 border-black border-dotted">
+            <h2 class="text-xl w-full">Discount</h2>
+            <div class="flex items-end">
+              <h2 class="text-nowrap">-{(totalPrice - discountedPrice).toFixed(0)} rsd</h2>
+            </div>
+          </div>
+        {/if}
+        <div class="flex grow mb-1 border-b-2 border-black border-dotted">
+          <h1 class="text-2xl font-bold w-full">Total</h1>
+          <div class="flex items-end">
+            <h1 class="font-bold text-nowrap">
+              {#if !isStandard}
+                {(discountedPrice + expressShipping).toFixed(0)}
+              {:else}
+                {(discountedPrice + standardShipping).toFixed(0)}
+              {/if}
+              rsd
+            </h1>
+          </div>
         </div>
+        <Button type="submit" class="w-full transform hover:-translate-y-1 mt-3" form="orderForm">Order</Button>
       </div>
-    {/if}
-    <div class="flex grow mb-1 border-b-2 border-black border-dotted">
-      <h1 class="text-2xl font-bold w-full">Total</h1>
-      <div class="flex items-end">
-        <h1 class="font-bold text-nowrap">
-          {#if isCash || !isStandard}
-            {(discountedPrice + expressShipping).toFixed(0)}
-          {:else}
-            {(discountedPrice + standardShipping).toFixed(0)}
-          {/if}
-          rsd
-        </h1>
-      </div>
+      {#if !isCash}
+        <div class="max-w-md w-full h-fit rounded-xl shadow-lg p-5 bg-white">
+          <h1 class="text-2xl font-bold mb-3">Bank Transfer Instructions</h1>
+          <p>To pay by card send money to this account:</p>
+        </div>
+      {/if}
     </div>
-    <Button type="submit" class="w-full transform hover:-translate-y-1 mt-3" form="orderForm">Submit</Button>
-  </div>
-  {#if user}
-    <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
-      <div class="flex flex-col items-center justify-center gap-4">
-        <Button
-          href="/dashboard"
-          variant="outlined"
-          class="w-full transform hover:-translate-y-1">Go to Dashboard</Button
-        >
-        <form class="w-full" action="/api/auth/signout">
-          <Button type="submit" class="w-full transform hover:-translate-y-1"
-            >Sign out</Button
+    <!-- {#if user}
+      <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
+        <div class="flex flex-col items-center justify-center gap-4">
+          <Button
+            href="/dashboard"
+            variant="outlined"
+            class="w-full transform hover:-translate-y-1">Go to Dashboard</Button
           >
-        </form>
+          <form class="w-full" action="/api/auth/signout">
+            <Button type="submit" class="w-full transform hover:-translate-y-1"
+              >Sign out</Button
+            >
+          </form>
+        </div>
       </div>
-    </div>
-  {:else}
-    <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
-      <div class="flex flex-col items-center justify-center gap-4">
-        <Button
-          href="/signin"
-          variant="outlined"
-          class="w-full transform hover:-translate-y-1"
-        >
-          Sign in
-        </Button>
-        <Button href="/signup" class="w-full transform hover:-translate-y-1">
-          Sign up
-        </Button>
+    {:else}
+      <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
+        <div class="flex flex-col items-center justify-center gap-4">
+          <Button
+            href="/signin"
+            variant="outlined"
+            class="w-full transform hover:-translate-y-1"
+          >
+            Sign in
+          </Button>
+          <Button href="/signup" class="w-full transform hover:-translate-y-1">
+            Sign up
+          </Button>
+        </div>
       </div>
-    </div>
-  {/if}
+    {/if} -->
+  </div>
 </div>
-<div class="h-[1000px]" />

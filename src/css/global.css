@@ -1,3 +1,6 @@
 body {
   background-color: #fbfcff;
 }
+.grid-temp-col {
+  grid-template-columns: 1fr 1fr 1fr;
+}

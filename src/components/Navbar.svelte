@@ -20,7 +20,7 @@
   }`}
 >
   <div
-    class="mx-5 flex h-24 max-w-screen-xl items-center justify-center w-full"
+    class="mx-5 mb-5 sm:mb-0 flex flex-col sm:flex-row h-24 max-w-screen-lg items-center justify-between w-full"
   >
     <a href="/" class="flex items-center font-display text-2xl">
       <img
@@ -28,8 +28,12 @@
         alt="Gleb's cards"
         width="80"
         height="80"
-        class="mr-2 rounded-sm"
+        class="rounded-sm"
       />
     </a>
+    <div class="flex gap-5">
+      <a class="hover:underline" href="/">Home</a>
+      <a class="hover:underline" href="/faq">FAQ</a>
+    </div>
   </div>
 </div>

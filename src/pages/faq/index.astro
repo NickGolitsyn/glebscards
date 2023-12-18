@@ -1,0 +1,15 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Faq from "../../components/Faq.svelte";
+import Navbar from "../../components/Navbar.svelte";
+import Footer from "@/components/Footer.svelte";
+
+const title = "Gleb's Cards";
+const description = "This website sells Gleb Feels Christmas cards. Gleb's Cards";
+---
+
+<Layout {description} {title}>
+  <Navbar client:load />
+  <Faq client:load />
+  <Footer client:load />
+</Layout>
