@@ -345,36 +345,5 @@
         </div>
       {/if}
     </div>
-    <!-- {#if user}
-      <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
-        <div class="flex flex-col items-center justify-center gap-4">
-          <Button
-            href="/dashboard"
-            variant="outlined"
-            class="w-full transform hover:-translate-y-1">Go to Dashboard</Button
-          >
-          <form class="w-full" action="/api/auth/signout">
-            <Button type="submit" class="w-full transform hover:-translate-y-1"
-              >Sign out</Button
-            >
-          </form>
-        </div>
-      </div>
-    {:else}
-      <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
-        <div class="flex flex-col items-center justify-center gap-4">
-          <Button
-            href="/signin"
-            variant="outlined"
-            class="w-full transform hover:-translate-y-1"
-          >
-            Sign in
-          </Button>
-          <Button href="/signup" class="w-full transform hover:-translate-y-1">
-            Sign up
-          </Button>
-        </div>
-      </div>
-    {/if} -->
   </div>
 </div>

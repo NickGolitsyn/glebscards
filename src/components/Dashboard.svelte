@@ -1,35 +1,67 @@
 <script lang="ts">
-  import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
-  import { Button } from "@/components/base/button";
-  import type { User } from "firebase/auth";
-  import EditAccountForm from "./EditAccountForm.svelte";
-  import { db } from "@/firebase/client";
-  import { onMount } from "svelte";
+  import { onMount } from 'svelte';
+  import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+  import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+  import type { User } from 'firebase/auth';
+  import { db } from '@/firebase/client';
+  import { Input } from './base/input';
+  import Button from './base/button/Button.svelte';
+  import LoadingButton from './LoadingButton.svelte';
 
-  export let user: User;
-
+  export let user: User | null;
   let userData: any[] = [];
+  let email = '';
+  let password = '';
+  let errorMessage = '';
+  let loading = false;
 
-  onMount(async () => {
-    console.log(user);
-    const querySnapshot = await getDocs(collection(db, "orders"));
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      const docId = doc.id;
-      const userObj = {
-        id: docId || '',
-        firstName: data.firstName || '', 
-        lastName: data.lastName || '',
-        address: data.address || '',
-        city: data.city || '',
-        postcode: data.postcode || '',
-        phoneNumber: data.phoneNumber || '',
-        email: data.email || '',
-        progress: data.progress || '',
-      };
-      userData = [...userData, userObj];
+  const auth = getAuth();
+
+  onMount(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      user = currentUser;
+      if (currentUser) {
+        fetchData();
+      }
     });
+
+    return unsubscribe;
   });
+
+  async function fetchData() {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'orders'));
+      userData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  async function handleLogin(event: Event) {
+  event.preventDefault();
+  loading = true;
+  errorMessage = '';
+
+  try {
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    const user = credential.user;
+    if (user) {
+      fetchData();
+    }
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else {
+      errorMessage = 'An unknown error occurred';
+    }
+  } finally {
+    loading = false;
+  }
+}
+
 
   async function handleProgressChange(id: string, progress: string) {
     try {
@@ -39,11 +71,13 @@
       console.error('Error updating progress:', error);
     }
   }
+
 </script>
 
 <div
-  class="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-20"
+  class="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-24"
 >
+{#if user}
   {#each userData as u}
     <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-5 bg-white">
       <div class="mb-4">
@@ -72,16 +106,64 @@
       </div>
     </div>
   {/each}
-  <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-16 bg-white">
-    <div class="flex flex-col items-center justify-center">
-      <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
-      <!-- <p class="text-xl mb-4">Welcome, {user.displayName}!</p> -->
-      <p>We are happy to see you here. Ready to dive in?</p>
-      <div class="mt-6">
-        <Button href="/account">Edit Your Account</Button>
+  {:else}
+   <div class="min-h-screen w-[90vw] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 p-6 rounded-xl shadow-lg bg-white">
+      <div>
+        <h1 class="mt-6 text-center text-3xl font-extrabold text-black">
+          Sign in
+        </h1>
       </div>
+      <form class="mt-8 space-y-6" on:submit|preventDefault={handleLogin}>
+        <div class="rounded-md space-y-4">
+          <div>
+            <label for="email" class="sr-only">Email</label>
+            <Input
+              bind:value={email}
+              type="email"
+              id="email"
+              placeholder="Email"
+              autocomplete="email"
+            />
+          </div>
+          <div>
+            <label for="password" class="sr-only">Password</label>
+            <Input
+              bind:value={password}
+              type="password"
+              id="password"
+              placeholder="Password"
+              autocomplete="current-password"
+            />
+            <div class="text-right mt-2">
+              <a
+                href="/forgot-password"
+                class="font-medium text-sm text-black hover:text-black/70"
+              >
+                Forgot your password?
+              </a>
+            </div>
+          </div>
+        </div>
+        {#if errorMessage}
+          <div class="mt-4 mb-3 text-center">
+            <p class="text-red-500 text-sm">{errorMessage}</p>
+          </div>
+        {/if}
+  
+        <div>
+          {#if loading}
+            <!-- Adjust 'LoadingButton' component based on your implementation -->
+            <LoadingButton class="w-full" />
+          {:else}
+            <!-- Adjust 'Button' component based on your implementation -->
+            <Button class="w-full" type="submit">Sign in</Button>
+          {/if}
+        </div>
+      </form>
     </div>
   </div>
+{/if}
 </div>
 
 <style>
