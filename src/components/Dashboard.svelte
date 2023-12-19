@@ -14,6 +14,7 @@
   let password = '';
   let errorMessage = '';
   let loading = false;
+  let loadedDocuments = 10;
 
   const auth = getAuth();
 
@@ -45,26 +46,26 @@
   }
 
   async function handleLogin(event: Event) {
-  event.preventDefault();
-  loading = true;
-  errorMessage = '';
+    event.preventDefault();
+    loading = true;
+    errorMessage = '';
 
-  try {
-    const credential = await signInWithEmailAndPassword(auth, email, password);
-    const user = credential.user;
-    if (user) {
-      fetchData();
+    try {
+      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const user = credential.user;
+      if (user) {
+        fetchData();
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = 'An unknown error occurred';
+      }
+    } finally {
+      loading = false;
     }
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    } else {
-      errorMessage = 'An unknown error occurred';
-    }
-  } finally {
-    loading = false;
   }
-}
 
 
   async function handleProgressChange(id: string, progress: any) {
@@ -76,120 +77,38 @@
     }
   }
 
+  async function loadMoreData() {
+    try {
+      const ordersRef = collection(db, 'orders');
+      const q = query(
+        ordersRef,
+        orderBy("time", "desc"),
+        limit(loadedDocuments + 10) // Increment the limit by 10 for each load
+      );
+      const querySnapshot = await getDocs(q);
+
+      // Load only the additional documents beyond the currently loaded ones
+      const additionalData = querySnapshot.docs
+        .slice(loadedDocuments) // Slice to get only the new documents
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          time: new Date(doc.data().time).toLocaleString(),
+        }));
+
+      userData = [...userData, ...additionalData]; // Append new data to existing data
+
+      loadedDocuments += 10; // Update the count of loaded documents
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
 </script>
 
 <div
   class="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-24"
 >
 {#if user}
-  <!-- <div class="max-w-md w-full"> -->
-    <!-- <h1 class="text-xl font-bold">In progress</h1>
-    {#each userData.filter(u => u.progress === 'progress') as u}
-      <div class="rounded-xl shadow-lg p-5 mt-5 bg-white">
-        <div class="mb-4">
-          <p>Time: {u.time}</p>
-          <p>First Name: {u.firstName}</p>
-          <p>Last Name: {u.lastName}</p>
-          <p>Address: {u.address}</p>
-          <p>City: {u.city}</p>
-          <p>Postcode: {u.postcode}</p>
-          <p>Phone Number: {u.phoneNumber}</p>
-          <p>Email: {u.email}</p>
-          <p>Quantity: {u.cardsQuantity}</p>
-          <p>Price: {u.price}</p>
-          <div class="flex items-center gap-2 py-1 px-2 bg-red-400 w-fit rounded-lg my-1">
-            <div class="w-5 h-5 bg-red-600 rounded-full"></div>
-            <p class="text-white">{u.progress}</p>
-          </div>
-          <select 
-            id={u.id}
-            class="border border-black rounded-md py-1 px-2 mt-1"
-            value={u.progress}
-            on:change={() => handleProgressChange(u.id, u.progress)}
-          >
-            <option value="placed">Placed</option>
-            <option value="progress">In Progress</option>
-            <option value="done">Done</option>
-          </select>
-        </div>
-      </div>
-    {/each}
-  </div>
-
-  <div class="max-w-md w-full ">
-    <h1 class="text-xl font-bold">Placed</h1>
-    {#each userData.filter(u => u.progress === 'placed') as u}
-      <div class="rounded-xl shadow-lg p-5 mt-5 bg-white">
-        <div class="mb-4">
-          <p>Time: {u.time}</p>
-          <p>First Name: {u.firstName}</p>
-          <p>Last Name: {u.lastName}</p>
-          <p>Address: {u.address}</p>
-          <p>City: {u.city}</p>
-          <p>Postcode: {u.postcode}</p>
-          <p>Phone Number: {u.phoneNumber}</p>
-          <p>Email: {u.email}</p>
-          <p>Quantity: {u.cardsQuantity}</p>
-          <p>Price: {u.price}</p>
-          <div class="flex items-center gap-2 py-1 px-2 bg-blue-400 w-fit rounded-lg my-1">
-            <div class="w-5 h-5 bg-blue-600 rounded-full"></div>
-            <p class="text-white">{u.progress}</p>
-          </div>
-          <select 
-            id={u.id}
-            class="border border-black rounded-md py-1 px-2 mt-1"
-            value={u.progress}
-            on:change={(event) => {
-              const target = event.target as HTMLSelectElement;
-              const selectedValue = target.value;
-              if (selectedValue) {
-                handleProgressChange(u.id, selectedValue);
-                u.progress = selectedValue; // Update the value manually in the array
-              }
-            }}
-          >
-            <option value="placed">Placed</option>
-            <option value="progress">In Progress</option>
-            <option value="done">Done</option>
-          </select>
-        </div>
-      </div>
-    {/each}
-  </div>
-
-  <div class="max-w-md w-full ">
-    <h1 class="text-xl font-bold">Done</h1>
-    {#each userData.filter(u => u.progress === 'done') as u}
-      <div class="rounded-xl shadow-lg p-5 mt-5 bg-white">
-        <div class="mb-4">
-          <p>Time: {u.time}</p>
-          <p>First Name: {u.firstName}</p>
-          <p>Last Name: {u.lastName}</p>
-          <p>Address: {u.address}</p>
-          <p>City: {u.city}</p>
-          <p>Postcode: {u.postcode}</p>
-          <p>Phone Number: {u.phoneNumber}</p>
-          <p>Email: {u.email}</p>
-          <p>Quantity: {u.cardsQuantity}</p>
-          <p>Price: {u.price} rsd</p>
-          <div class="flex items-center gap-2 py-1 px-2 bg-green-400 w-fit rounded-lg my-1">
-            <div class="w-5 h-5 bg-green-600 rounded-full"></div>
-            <p class="text-white">{u.progress}</p>
-          </div>
-          <select 
-            id={u.id}
-            class="border border-black rounded-md py-1 px-2 mt-1"
-            value={u.progress}
-            on:change={() => handleProgressChange(u.id, u.progress)}
-          >
-            <option value="placed">Placed</option>
-            <option value="progress">In Progress</option>
-            <option value="done">Done</option>
-          </select>
-        </div>
-      </div>
-    {/each} -->
-  <!-- </div> -->
   {#each userData as u}
     <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-5 bg-white">
       <div class="mb-4">
@@ -218,6 +137,12 @@
       </div>
     </div>
   {/each}
+  {#if userData.length > 0}
+    <!-- Button to load more data -->
+    <div class="mt-4">
+      <Button on:click={loadMoreData}>Load More</Button>
+    </div>
+  {/if}
   {:else}
    <div class="min-h-screen w-[90vw] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8 p-6 rounded-xl shadow-lg bg-white">

@@ -4,6 +4,7 @@
   import { collection, addDoc } from "firebase/firestore"; 
   import { db } from "@/firebase/client";
   import CardPreview from "./CardPreview.svelte";
+  import LoadingButton from "./LoadingButton.svelte";
   export let user: User;
 
   let firstName = '';
@@ -14,6 +15,7 @@
   let phoneNumber = '';
   let email = '';
   let cardsQuantity: number | null = null;
+  let loading = false;
   
   let expressShipping = 350;
   let pricePerOne = 290;
@@ -51,6 +53,7 @@
 
   async function handleSubmit(event: any) {
     event.preventDefault();
+    loading = true;
     try {
       const timestamp = new Date();
       await addDoc(collection(db, "orders"), {
@@ -80,6 +83,8 @@
       }, 3000);
     } catch (error) {
       console.error('Error adding document: ', error);
+    } finally {
+      loading = false;
     }
   }
 </script>
@@ -125,7 +130,7 @@
 </style>
 
 <div class="mt-16 pt-20">
-  <div class="flex flex-col w-fit mx-auto mb-10">
+  <div class="flex flex-col mx-auto mb-10 max-w-md w-[90vw]">
     <h1 class="font-bold text-xl text-center mb-3">Božićna Čestitka Cene</h1>
     <div>
       <p>1+ Čestitka: 290 rsd</p>
@@ -337,14 +342,18 @@
             </h1>
           </div>
         </div>
-        <Button type="submit" class="w-full transform hover:-translate-y-1 mt-3" form="orderForm">Naručite</Button>
+          {#if loading}
+            <LoadingButton class="w-full" />
+          {:else}
+            <Button type="submit" class="w-full transform hover:-translate-y-1 mt-3" form="orderForm">Naručite</Button>
+          {/if}
       </div>
       <div class="max-w-md w-full h-fit rounded-xl shadow-lg p-5 bg-white">
         <h1 class="text-2xl font-bold mb-3">Instrukcije za plaćanje:</h1>
         <p>Plati poštaru pouzecu</p>
       </div>
       {#if showSuccessMessage}
-        <div class="fixed bottom-10 right-[50%] translate-x-1/2 bg-lime-600 text-white py-1 px-2 rounded-md">Narudžbina</div>
+        <div class="fixed bottom-[50%] translate-y-1/2 right-[50%] translate-x-1/2 bg-lime-600 text-white py-7 px-6 sm:py-10 sm:px-14 z-40 rounded-xl text-3xl sm:text-7xl">Vaša narudžbina je uspešno poslata!</div>
       {/if}
     </div>
   </div>
