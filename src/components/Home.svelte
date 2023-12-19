@@ -287,7 +287,7 @@
     </div>
     <div class="max-w-md w-full h-fit sticky top-28 z-10 flex flex-col-reverse lg:flex-col gap-5">
       <div class="max-w-md w-full h-fit rounded-xl shadow-lg p-5 bg-white">
-        <h1 class="text-2xl font-bold mb-3">Rezime Reda</h1>
+        <h1 class="text-2xl font-bold mb-3">Ukupna cena</h1>
         
         {#if cardsQuantity != null && cardsQuantity > 0}
           <div class="flex grow border-b-2 border-black border-dotted">
