@@ -64,13 +64,9 @@
 
 
   async function handleProgressChange(id: string, progress: any) {
-    console.log(id);
-    console.log(progress);
-    
     try {
       const userDocRef = doc(db, 'orders', id);
       await updateDoc(userDocRef, { progress });
-      console.log(progress);
     } catch (error) {
       console.error('Error updating progress:', error);
     }
@@ -202,11 +198,7 @@
         <p>Phone Number: {u.phoneNumber}</p>
         <p>Email: {u.email}</p>
         <p>Quantity: {u.cardsQuantity}</p>
-        <p>Price: {u.price} rsd</p>
-        <!-- <div class="flex items-center gap-2 py-1 px-2 bg-red-400 w-fit rounded-lg my-1">
-          <div class="w-5 h-5 bg-red-600 rounded-full"></div>
-          <p class="text-white">{u.progress}</p>
-        </div> -->
+        <p>Price: {(u.price - 350)} rsd</p>
         <select 
           id={u.id}
           class="border border-black rounded-md py-1 px-2 mt-1"
@@ -216,6 +208,7 @@
           <option value="placed">Placed</option>
           <option value="progress">In Progress</option>
           <option value="done">Done</option>
+          <option value="cancelled">Cancelled</option>
         </select>
       </div>
     </div>

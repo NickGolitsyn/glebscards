@@ -14,26 +14,14 @@
   let phoneNumber = '';
   let email = '';
   let cardsQuantity: number | null = null;
-  let isCash = true;
-  let isStandard = false; 
   
   let expressShipping = 350;
   let pricePerOne = 290;
 
-  let discountedPrice = 0
-  let totalPrice = 0
+  let discountedPrice = 0;
+  let totalPrice = 0;
 
-  // function handlePaymentChange(event: any) {
-  //   isCash = event.target.value === 'cash';
-  //   isStandard = !isCash;
-  //   console.log(isCash);
-  //   console.log(isStandard);
-    
-  // }
-
-  // function handleDeliveryChange(event: any) {
-  //   isStandard = event.target.value === 'standard';
-  // }
+  let showSuccessMessage = false;
 
   function handlePhoneNumberChange(event: any) {
     phoneNumber = event.target.value.replace(/[^0-9+]/g, '');
@@ -78,6 +66,7 @@
         progress: 'placed',
         price: (discountedPrice + expressShipping).toFixed(0)
       });
+      showSuccessMessage = true;
       firstName = '';
       lastName = '';
       address = '';
@@ -86,6 +75,9 @@
       phoneNumber = '';
       email = '';
       cardsQuantity = null;
+      setTimeout(() => {
+        showSuccessMessage = false;
+      }, 3000);
     } catch (error) {
       console.error('Error adding document: ', error);
     }
@@ -351,6 +343,9 @@
         <h1 class="text-2xl font-bold mb-3">Instrukcije za plaćanje:</h1>
         <p>Plati poštaru pouzecu</p>
       </div>
+      {#if showSuccessMessage}
+        <div class="fixed bottom-10 right-[50%] translate-x-1/2 bg-lime-600 text-white py-1 px-2 rounded-md">Narudžbina</div>
+      {/if}
     </div>
   </div>
 </div>
