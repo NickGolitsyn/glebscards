@@ -5,6 +5,6 @@
 	</div>
 	<div class="flex flex-col gap-3">
 		<h1 class="font-bold text-xl">Božićna Čestitka 2024</h1>
-		<p>Ovog Božića, pošaljite svojim voljenima Božićnu čestitku. Sa prelepim slikama pejzaža od strane Gleba Feels-a, ova čestitka će uneti dodatnu čar u vaš praznični period! Humor i praznično raspoloženje vas čekaju - ne propustite ovu veselu čestitku!</p>
+		<p>Dobrodošli! Oduševićete se ekskluzivnom Božićnom čestitkom 'Pogled na Rtanj'. 10% od svake kupovine ide u humanitarne svrhe. Moje čestitke stižu sledećeg dana širom Srbije. Podelite toplinu praznika vašim bližnjima :)</p>
 	</div>
 </div>
