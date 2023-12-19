@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-  import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+  import { collection, doc, getDocs, limit, orderBy, query, updateDoc } from 'firebase/firestore';
   import type { User } from 'firebase/auth';
   import { db } from '@/firebase/client';
   import { Input } from './base/input';
@@ -30,7 +30,10 @@
 
   async function fetchData() {
     try {
-      const querySnapshot = await getDocs(collection(db, 'orders'));
+      const ordersRef = collection(db, 'orders');
+      const q = query(ordersRef, orderBy("time", "desc"), limit(10));
+      const querySnapshot = await getDocs(q);
+
       userData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -209,6 +212,7 @@
           <option value="placed">Placed</option>
           <option value="progress">In Progress</option>
           <option value="done">Done</option>
+          <option value="sending">Sending to post Office</option>
           <option value="cancelled">Cancelled</option>
         </select>
       </div>
