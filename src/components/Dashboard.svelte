@@ -34,6 +34,7 @@
       userData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
+        time: new Date(doc.data().time).toLocaleString(),
       }));
     } catch (error) {
       console.error('Error fetching data:', error);
