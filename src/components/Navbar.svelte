@@ -20,7 +20,7 @@
   }`}
 >
   <div
-    class="mx-5 mb-5 sm:mb-0 flex flex-col sm:flex-row h-24 max-w-screen-lg items-center justify-between w-full"
+    class="mx-5 mb-5 sm:mb-0 flex flex-col sm:flex-row h-24 max-w-screen-lg items-center justify-center w-full"
   >
     <a href="/" class="flex items-center font-display text-2xl">
       <img
@@ -31,9 +31,9 @@
         class="rounded-sm"
       />
     </a>
-    <div class="flex gap-5">
+    <!-- <div class="flex gap-5">
       <a class="hover:underline" href="/">Home</a>
       <a class="hover:underline" href="/faq">FAQ</a>
-    </div>
+    </div> -->
   </div>
 </div>

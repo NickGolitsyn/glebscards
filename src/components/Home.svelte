@@ -18,21 +18,22 @@
   let isStandard = false; 
   
   let expressShipping = 350;
-  let standardShipping = 200;
   let pricePerOne = 290;
-  let shippingCost = isStandard ? standardShipping : expressShipping;
 
   let discountedPrice = 0
   let totalPrice = 0
 
-  function handlePaymentChange(event: any) {
-    isCash = event.target.value === 'cash';
-    isStandard = !isCash;
-  }
+  // function handlePaymentChange(event: any) {
+  //   isCash = event.target.value === 'cash';
+  //   isStandard = !isCash;
+  //   console.log(isCash);
+  //   console.log(isStandard);
+    
+  // }
 
-  function handleDeliveryChange(event: any) {
-    isStandard = event.target.value === 'standard';
-  }
+  // function handleDeliveryChange(event: any) {
+  //   isStandard = event.target.value === 'standard';
+  // }
 
   function handlePhoneNumberChange(event: any) {
     phoneNumber = event.target.value.replace(/[^0-9+]/g, '');
@@ -75,8 +76,7 @@
         email,
         cardsQuantity,
         progress: 'placed',
-        isCash,
-        price: discountedPrice + shippingCost,
+        price: (discountedPrice + expressShipping).toFixed(0)
       });
       firstName = '';
       lastName = '';
@@ -86,7 +86,6 @@
       phoneNumber = '';
       email = '';
       cardsQuantity = null;
-      isCash = true;
     } catch (error) {
       console.error('Error adding document: ', error);
     }
@@ -134,14 +133,24 @@
 </style>
 
 <div class="mt-16 pt-20">
+  <div class="flex flex-col w-fit mx-auto mb-10">
+    <h1 class="font-bold text-xl text-center mb-3">Božićna Čestitka Cene</h1>
+    <div>
+      <p>1+ Čestitka: 290 rsd</p>
+      <p>5+ Čestitki: 1160 rsd <s class="text-xs">1450 rsd</s> 20% popusta</p>
+      <p>10+ Čestitki: 2175 rsd <s class="text-xs">2900 rsd</s> 25% popusta</p>
+      <p>20+ Čestitki: 4060 rsd <s class="text-xs">5800 rsd</s> 30% popusta</p>
+    </div>
+  </div>
   <CardPreview />
   <div class="lg:grid flex gap-3 flex-col items-center lg:items-start lg:grid-cols-3 px-4 sm:px-6 lg:px-8 mb-20">
     <div class="max-w-2xl" />
     <div class="max-w-md w-full rounded-xl shadow-lg p-5 bg-white">
+      <h1 class="text-2xl font-bold mb-3">Obrazac za naručivanje</h1>
       <form id="orderForm" on:submit={handleSubmit}>
         <div class="form-row form-names">
           <div>
-            <label for="firstName">First Name:</label>
+            <label for="firstName">Ime:</label>
             <input 
               required 
               type="text" 
@@ -151,7 +160,7 @@
             />
           </div>
           <div>
-            <label for="lastName">Last Name:</label>
+            <label for="lastName">Prezime:</label>
             <input 
               required 
               type="text" 
@@ -163,7 +172,7 @@
         </div>
         <div class="form-row">
           <div class="flex flex-col">
-            <label for="address">Address:</label>
+            <label for="address">Adresa:</label>
             <input 
               required 
               type="text" 
@@ -175,7 +184,7 @@
         </div>
         <div class="form-row">
           <div class="flex flex-col">
-            <label for="city">City:</label>
+            <label for="city">Grad:</label>
             <input 
               required 
               type="text" 
@@ -187,15 +196,15 @@
         </div>
         <div class="form-row">
           <div class="flex flex-col">
-            <label for="country">Country:</label>
+            <label for="country">Država:</label>
             <select id="country" name="country" class="border border-black rounded-md py-1 px-2 mt-1" >
-              <option value="Serbia">Serbia</option>
+              <option value="Serbia">Srbija</option>
             </select>
           </div>
         </div>
         <div class="form-row">
           <div class="flex flex-col">
-            <label for="postcode">Postcode:</label>
+            <label for="postcode">Poštanski Broj:</label>
             <input 
               required 
               type="number" 
@@ -207,7 +216,7 @@
         </div>
         <div class="form-row">
           <div class="flex flex-col">
-            <label for="phoneNumber">Phone Number:</label>
+            <label for="phoneNumber">Broj Telefona:</label>
             <input 
               required 
               type="tel" 
@@ -232,7 +241,7 @@
         </div>
         <div class="form-row">
           <div class="flex flex-col">
-            <label for="cardsQuantity">Number of Cards (max 50):</label>
+            <label for="cardsQuantity">Broj kartica (maks. 50):</label>
             <input 
               required 
               type="number" 
@@ -245,7 +254,7 @@
             />
           </div>
         </div>
-        <div class="form-row">
+        <!-- <div class="form-row">
           <div class="flex flex-col">
             <label for="payment">Payment Type:</label>
             <select 
@@ -273,12 +282,12 @@
                 </select>
               </div>
             </div>
-          {/if}
+          {/if} -->
       </form>
     </div>
     <div class="max-w-md w-full h-fit sticky top-28 z-10 flex flex-col-reverse lg:flex-col gap-5">
       <div class="max-w-md w-full h-fit rounded-xl shadow-lg p-5 bg-white">
-        <h1 class="text-2xl font-bold mb-3">Order Summary</h1>
+        <h1 class="text-2xl font-bold mb-3">Rezime Reda</h1>
         
         {#if cardsQuantity != null && cardsQuantity > 0}
           <div class="flex grow border-b-2 border-black border-dotted">
@@ -297,19 +306,19 @@
           </div>
         {/if}
         <div class="flex grow mb-1 border-b-2 border-black border-dotted">
-          <h2 class="text-xl w-full">Subtotal</h2>
+          <h2 class="text-xl w-full">Međuzbir</h2>
           <div class="flex items-end">
             <h2 class="text-nowrap">{totalPrice.toFixed(0)} rsd</h2>
           </div>
         </div>
         <div class="flex grow mb-1 border-b-2 border-black border-dotted">
-          <h2 class="text-xl w-full">Shipping</h2>
+          <h2 class="text-xl w-full">Poštarina</h2>
           <div class="flex items-end">
             <h2 class="text-nowrap">
-              {#if !isStandard}
+              {#if totalPrice > 0}
                 {expressShipping.toFixed(0)}
               {:else}
-                {standardShipping.toFixed(0)}
+                0
               {/if}
               rsd
             </h2>
@@ -317,33 +326,31 @@
         </div>
         {#if cardsQuantity != null && cardsQuantity >= 5}
           <div class="flex grow mb-1 border-b-2 border-black border-dotted">
-            <h2 class="text-xl w-full">Discount</h2>
+            <h2 class="text-xl w-full">Popust</h2>
             <div class="flex items-end">
               <h2 class="text-nowrap">-{(totalPrice - discountedPrice).toFixed(0)} rsd</h2>
             </div>
           </div>
         {/if}
         <div class="flex grow mb-1 border-b-2 border-black border-dotted">
-          <h1 class="text-2xl font-bold w-full">Total</h1>
+          <h1 class="text-2xl font-bold w-full">Ukupno</h1>
           <div class="flex items-end">
             <h1 class="font-bold text-nowrap">
-              {#if !isStandard}
+              {#if totalPrice > 0}
                 {(discountedPrice + expressShipping).toFixed(0)}
               {:else}
-                {(discountedPrice + standardShipping).toFixed(0)}
+                0
               {/if}
               rsd
             </h1>
           </div>
         </div>
-        <Button type="submit" class="w-full transform hover:-translate-y-1 mt-3" form="orderForm">Order</Button>
+        <Button type="submit" class="w-full transform hover:-translate-y-1 mt-3" form="orderForm">Naručite</Button>
       </div>
-      {#if !isCash}
-        <div class="max-w-md w-full h-fit rounded-xl shadow-lg p-5 bg-white">
-          <h1 class="text-2xl font-bold mb-3">Bank Transfer Instructions</h1>
-          <p>To pay by card send money to this account:</p>
-        </div>
-      {/if}
+      <div class="max-w-md w-full h-fit rounded-xl shadow-lg p-5 bg-white">
+        <h1 class="text-2xl font-bold mb-3">Instrukcije za plaćanje:</h1>
+        <p>Plati poštaru pouzecu</p>
+      </div>
     </div>
   </div>
 </div>

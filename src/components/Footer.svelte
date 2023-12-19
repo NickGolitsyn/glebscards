@@ -7,13 +7,12 @@
     </div>
     <div class="flex flex-col sm:mx-auto">
       <h3 class="text-lg font-medium mb-1">Socials:</h3>
-      <a class="text-sm hover:underline" target="_blank" href="https://www.instagram.com/glebfeels/">Instagram</a>
+      <a class="text-sm hover:underline" target="_blank" href="https://www.instagram.com/glebs_cards/">Instagram</a>
       <a class="text-sm hover:underline" target="_blank" href="https://tiktok.com/@glebfeels">TikTok</a>
       <a class="text-sm hover:underline" target="_blank" href="https://www.youtube.com/@glebfeels">YouTube</a>
     </div>
     <div class="flex flex-col sm:ml-auto">
-      <h3 class="text-lg font-medium mb-1">Contact:</h3>
-      <a class="text-sm hover:underline" target="_blank" href="tel:+447403525139">+44 7403 525139</a>
+      <h3 class="text-lg font-medium mb-1">Kontakt:</h3>
       <a class="text-sm hover:underline" target="_blank" href="mailto:glebfeels@gmail.com">glebfeels@gmail.com</a>
     </div>
   </div>

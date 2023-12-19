@@ -81,7 +81,7 @@
   {#each userData as u}
     <div class="max-w-md w-full rounded-xl shadow-lg p-5 mt-5 bg-white">
       <div class="mb-4">
-        <p>id: {u.id}</p>
+        <p>Time: {u.time}</p>
         <p>First Name: {u.firstName}</p>
         <p>Last Name: {u.lastName}</p>
         <p>Address: {u.address}</p>
@@ -89,6 +89,8 @@
         <p>Postcode: {u.postcode}</p>
         <p>Phone Number: {u.phoneNumber}</p>
         <p>Email: {u.email}</p>
+        <p>Quantity: {u.cardsQuantity}</p>
+        <p>Price: {u.price}</p>
         <div class="flex items-center gap-2 py-1 px-2 bg-red-400 w-fit rounded-lg">
           <div class="w-5 h-5 bg-red-600 rounded-full"></div>
           <p class="text-white">{u.progress}</p>
