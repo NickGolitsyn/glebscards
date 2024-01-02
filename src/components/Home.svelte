@@ -131,13 +131,13 @@
 
 <div class="mt-16 pt-20">
   <div class="flex flex-col mx-auto mb-10 max-w-md w-[90vw]">
-    <h1 class="font-bold text-xl text-center mb-3">Božićna Čestitka Cene</h1>
-    <div>
+    <h1 class="font-bold text-xl text-center mb-3">Božićne čestitke su rasprodate</h1>
+    <!-- <div>
       <p>1+ Čestitka: 290 rsd</p>
       <p>5+ Čestitki: 1160 rsd <s class="text-xs">1450 rsd</s> 20% popusta</p>
       <p>10+ Čestitki: 2175 rsd <s class="text-xs">2900 rsd</s> 25% popusta</p>
       <p>20+ Čestitki: 4060 rsd <s class="text-xs">5800 rsd</s> 30% popusta</p>
-    </div>
+    </div> -->
   </div>
   <CardPreview />
   <div class="lg:grid flex gap-3 flex-col items-center lg:items-start lg:grid-cols-3 px-4 sm:px-6 lg:px-8 mb-20">
@@ -298,20 +298,20 @@
               </div>
             </div>
             <div class="flex items-end">
-              <h2 class="text-nowrap">{cardsQuantity} x {pricePerOne.toFixed(0)} rsd</h2>
+              <h2 class="text-nowrap w-max">{cardsQuantity} x {pricePerOne.toFixed(0)} rsd</h2>
             </div>
           </div>
         {/if}
         <div class="flex grow mb-1 border-b-2 border-black border-dotted">
           <h2 class="text-xl w-full">Međuzbir</h2>
           <div class="flex items-end">
-            <h2 class="text-nowrap">{totalPrice.toFixed(0)} rsd</h2>
+            <h2 class="text-nowrap w-max">{totalPrice.toFixed(0)} rsd</h2>
           </div>
         </div>
         <div class="flex grow mb-1 border-b-2 border-black border-dotted">
           <h2 class="text-xl w-full">Poštarina</h2>
           <div class="flex items-end">
-            <h2 class="text-nowrap">
+            <h2 class="text-nowrap w-max">
               {#if totalPrice > 0}
                 {expressShipping.toFixed(0)}
               {:else}
@@ -325,14 +325,14 @@
           <div class="flex grow mb-1 border-b-2 border-black border-dotted">
             <h2 class="text-xl w-full">Popust</h2>
             <div class="flex items-end">
-              <h2 class="text-nowrap">-{(totalPrice - discountedPrice).toFixed(0)} rsd</h2>
+              <h2 class="text-nowrap w-max">-{(totalPrice - discountedPrice).toFixed(0)} rsd</h2>
             </div>
           </div>
         {/if}
         <div class="flex grow mb-1 border-b-2 border-black border-dotted">
           <h1 class="text-2xl font-bold w-full">Ukupno</h1>
           <div class="flex items-end">
-            <h1 class="font-bold text-nowrap">
+            <h1 class="font-bold text-nowrap w-max">
               {#if totalPrice > 0}
                 {(discountedPrice + expressShipping).toFixed(0)}
               {:else}
@@ -345,7 +345,8 @@
           {#if loading}
             <LoadingButton class="w-full" />
           {:else}
-            <Button type="submit" class="w-full transform hover:-translate-y-1 mt-3" form="orderForm">Naručite</Button>
+            <!-- <Button type="submit" class="w-full transform hover:-translate-y-1 mt-3" form="orderForm">Naručite</Button> -->
+            <Button class="w-full mt-3" disabled>Rasprodato</Button>
           {/if}
       </div>
       <div class="max-w-md w-full h-fit rounded-xl shadow-lg p-5 bg-white">
